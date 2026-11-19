@@ -163,7 +163,7 @@ footer{
 <h2>Confidential Reporting</h2>
 <p>Report suspected bribery, corruption or administrative misconduct.</p>
 <p>You can choose to report anonymously or identify yourself.</p>
-<form onsubmit="event.preventDefault();alert('Demo only: secure reporting backend is not yet connected.')">
+<form id="reportForm">
 <input placeholder="Subject of report" required>
 <textarea placeholder="Describe the incident" required></textarea>
 <label><input type="checkbox" style="width:auto"> I wish to identify myself</label>
@@ -197,5 +197,49 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_KEY
 );
 </script>
+<script>
+document.getElementById("reportForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const inputs = this.querySelectorAll("input");
+  const textareas = this.querySelectorAll("textarea");
+
+  const subject = Array.from(inputs).find(el =>
+    el.placeholder === "Subject of report"
+  );
+
+  const description = Array.from(textareas).find(el =>
+    el.placeholder === "Describe the incident"
+  );
+
+  const anonymous = this.querySelector('input[type="checkbox"]');
+  const contact = Array.from(inputs).find(el =>
+    el.type === "email" || el.type === "tel"
+  );
+
+  if (!subject || !description) {
+    alert("Please check the report form fields.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("reports")
+    .insert([{
+      category: subject.value,
+      description: description.value,
+      is_anonymous: anonymous ? anonymous.checked : false,
+      contact: anonymous && anonymous.checked ? null : (contact ? contact.value : null),
+      status: "pending"
+    }]);
+
+  if (error) {
+    alert("Report submission failed: " + error.message);
+    return;
+  }
+
+  alert("Your report has been submitted successfully!");
+  this.reset();
+});
+                                                       </script>
 </body>
 </html>
