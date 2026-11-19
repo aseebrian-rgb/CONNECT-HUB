@@ -9,6 +9,10 @@
 <style>
 *{box-sizing:border-box}
 
+[hidden]{
+ display:none !important;
+}
+
 body{
  margin:0;
  font-family:Arial,sans-serif;
@@ -41,9 +45,19 @@ nav button{
  border-radius:8px;
  font-weight:bold;
  white-space:nowrap;
+ cursor:pointer;
 }
 
-main{padding:18px;max-width:850px;margin:auto}
+nav button:hover{
+ background:#0755b5;
+ color:white;
+}
+
+main{
+ padding:18px;
+ max-width:850px;
+ margin:auto;
+}
 
 .welcome{
  background:white;
@@ -78,14 +92,12 @@ h2{color:#0755b5}
  cursor:pointer;
 }
 
-section{margin-top:22px}
+.card button:hover,.action:hover{
+ background:#06418a;
+}
 
-textarea{
- width:100%;
- padding:12px;
- margin:8px 0;
- border:1px solid #ccd7e5;
- border-radius:7px;
+section{
+ margin-top:22px;
 }
 
 footer{
@@ -111,19 +123,22 @@ footer{
 
 <nav>
 <button onclick="showSection('dashboard')">Home</button>
-<button onclick="showSection('classes')">Classes</button>
-<button onclick="showSection('calendar')">Calendar</button>
+<button onclick="showSection('classes')">Learning</button>
+<button onclick="showSection('lectures')">Live Lectures</button>
+<button onclick="showSection('calendar')">Timetable</button>
 <button onclick="showSection('support')">Support</button>
 </nav>
 
 <main>
+
+<!-- HOME DASHBOARD -->
+<section id="dashboard">
 
 <div class="welcome">
 <h2>Welcome to ConnectHub 👋</h2>
 <p>One platform connecting students, lecturers and university administration.</p>
 </div>
 
-<section id="dashboard">
 <h2>Student Dashboard</h2>
 
 <div class="grid">
@@ -137,7 +152,7 @@ footer{
 <div class="card">
 <h3>🎓 Live Lectures</h3>
 <p>Connect with lecturers and attend online classes.</p>
-<button onclick="alert('Live lecture feature coming soon!')">Open</button>
+<button onclick="showSection('lectures')">Open</button>
 </div>
 
 <div class="card">
@@ -149,33 +164,72 @@ footer{
 </div>
 </section>
 
+<!-- LEARNING -->
 <section id="classes" hidden>
-<h2>Learning & Classes</h2>
+<h2>📚 Learning & Classes</h2>
 <p>Access your courses, learning materials and lecturer updates.</p>
 
 <div class="card">
 <h3>Course Resources</h3>
 <p>Academic materials and recorded lectures will appear here.</p>
+<p><strong>More learning features coming soon.</strong></p>
 </div>
+
+<button class="action" onclick="showSection('dashboard')">
+Back to Home
+</button>
 </section>
 
-<section id="calendar" hidden>
-<h2>Academic Calendar</h2>
-<p>University events, lecture schedules and important dates.</p>
+<!-- LIVE LECTURES -->
+<section id="lectures" hidden>
+<h2>🎓 Live Lectures</h2>
+<p>Connect with lecturers and attend online classes.</p>
 
 <div class="card">
-<p>Academic calendar integration coming soon.</p>
+<h3>Online Classroom</h3>
+<p>Live lecture rooms and scheduled online classes will appear here.</p>
+<p><strong>Live lecture integration coming soon.</strong></p>
 </div>
+
+<button class="action" onclick="showSection('dashboard')">
+Back to Home
+</button>
 </section>
 
+<!-- TIMETABLE -->
+<section id="calendar" hidden>
+<h2>📅 Academic Timetable</h2>
+<p>Keep track of lectures, university events and important academic dates.</p>
+
+<div class="card">
+<h3>My Timetable</h3>
+<p>Your academic schedule will appear here.</p>
+<p><strong>Timetable integration coming soon.</strong></p>
+</div>
+
+<button class="action" onclick="showSection('dashboard')">
+Back to Home
+</button>
+</section>
+
+<!-- SUPPORT -->
 <section id="support" hidden>
-<h2>Help & Support</h2>
+<h2>🛟 Help & Support</h2>
+
 <p>ConnectHub support is designed to provide automated assistance 24/7 and human assistance during university working hours.</p>
 
-<textarea placeholder="Describe your issue"></textarea>
+<div class="card">
+<h3>Need Help?</h3>
+<p>Support messaging will be connected in a future version.</p>
 
-<button class="action" onclick="alert('Support messaging will be connected in a future version.')">
-Submit
+<button class="action"
+onclick="alert('Support messaging will be connected in a future version.')">
+Contact Support
+</button>
+</div>
+
+<button class="action" onclick="showSection('dashboard')">
+Back to Home
 </button>
 </section>
 
@@ -188,19 +242,32 @@ Submit
 
 <script>
 function showSection(id){
- document.querySelectorAll('main section').forEach(s=>{
-  s.hidden=true;
+
+ const sections = document.querySelectorAll('main section');
+
+ sections.forEach(section => {
+  section.hidden = true;
  });
 
- document.getElementById(id).hidden=false;
- window.scrollTo(0,0);
+ const selectedSection = document.getElementById(id);
+
+ if(selectedSection){
+  selectedSection.hidden = false;
+ }
+
+ window.scrollTo({
+  top:0,
+  behavior:'smooth'
+ });
 }
 </script>
 
 <script>
-const SUPABASE_URL = "https://xeuhhmjkkgkfakiorrzd.supabase.co";
+const SUPABASE_URL =
+"https://xeuhhmjkkgkfakiorrzd.supabase.co";
 
-const SUPABASE_KEY = "sb_publishable_Ia-GdcyqO0ojfCF_2a8ozA_cg-g0FVb";
+const SUPABASE_KEY =
+"sb_publishable_Ia-GdcyqO0ojfCF_2a8ozA_cg-g0FVb";
 
 const supabaseClient = window.supabase.createClient(
  SUPABASE_URL,
@@ -210,4 +277,3 @@ const supabaseClient = window.supabase.createClient(
 
 </body>
 </html>
-
