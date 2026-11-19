@@ -5,21 +5,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ConnectHub | University Platform</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
  margin:0;
  font-family:Arial,sans-serif;
  background:#f1f5fb;
  color:#183153;
 }
+
 header{
  background:#0755b5;
  color:white;
  padding:22px;
 }
+
 header h1{margin:0;font-size:27px}
 header p{margin:7px 0 0}
+
 nav{
  display:flex;
  gap:10px;
@@ -27,6 +32,7 @@ nav{
  background:white;
  padding:14px;
 }
+
 nav button{
  border:0;
  background:#e8f1ff;
@@ -36,26 +42,33 @@ nav button{
  font-weight:bold;
  white-space:nowrap;
 }
+
 main{padding:18px;max-width:850px;margin:auto}
+
 .welcome{
  background:white;
  padding:20px;
  border-radius:12px;
  margin-bottom:18px;
 }
+
 h2{color:#0755b5}
+
 .grid{
  display:grid;
  grid-template-columns:repeat(2,1fr);
  gap:12px;
 }
+
 .card{
  background:white;
  padding:17px;
  border-radius:12px;
  box-shadow:0 2px 8px #0000000d;
 }
+
 .card h3{margin-top:5px}
+
 .card button,.action{
  background:#0755b5;
  color:white;
@@ -64,25 +77,31 @@ h2{color:#0755b5}
  padding:10px 13px;
  cursor:pointer;
 }
+
 section{margin-top:22px}
-input,textarea{
+
+textarea{
  width:100%;
  padding:12px;
  margin:8px 0;
  border:1px solid #ccd7e5;
  border-radius:7px;
 }
+
 footer{
  text-align:center;
  padding:25px;
  color:#68778b;
 }
+
 @media(max-width:450px){
  .grid{grid-template-columns:1fr}
 }
 </style>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
 
 <header>
@@ -106,6 +125,7 @@ footer{
 
 <section id="dashboard">
 <h2>Student Dashboard</h2>
+
 <div class="grid">
 
 <div class="card">
@@ -126,18 +146,13 @@ footer{
 <button onclick="showSection('calendar')">View</button>
 </div>
 
-<div class="card">
-<h3>🛡️ Report Issues</h3>
-<p>Confidential reporting of misconduct and corruption.</p>
-<button onclick="showSection('report')">Report</button>
-</div>
-
 </div>
 </section>
 
 <section id="classes" hidden>
 <h2>Learning & Classes</h2>
 <p>Access your courses, learning materials and lecturer updates.</p>
+
 <div class="card">
 <h3>Course Resources</h3>
 <p>Academic materials and recorded lectures will appear here.</p>
@@ -147,6 +162,7 @@ footer{
 <section id="calendar" hidden>
 <h2>Academic Calendar</h2>
 <p>University events, lecture schedules and important dates.</p>
+
 <div class="card">
 <p>Academic calendar integration coming soon.</p>
 </div>
@@ -155,20 +171,12 @@ footer{
 <section id="support" hidden>
 <h2>Help & Support</h2>
 <p>ConnectHub support is designed to provide automated assistance 24/7 and human assistance during university working hours.</p>
-<textarea placeholder="Describe your issue"></textarea>
-<button class="action" onclick="alert('Support messaging will be connected in a future version.')">Submit</button>
-</section>
 
-<section id="report" hidden>
-<h2>Confidential Reporting</h2>
-<p>Report suspected bribery, corruption or administrative misconduct.</p>
-<p>You can choose to report anonymously or identify yourself.</p>
-<form id="reportForm">
-<input placeholder="Subject of report" required>
-<textarea placeholder="Describe the incident" required></textarea>
-<label><input type="checkbox" style="width:auto"> I wish to identify myself</label>
-<button class="action" type="submit">Submit Report</button>
-</form>
+<textarea placeholder="Describe your issue"></textarea>
+
+<button class="action" onclick="alert('Support messaging will be connected in a future version.')">
+Submit
+</button>
 </section>
 
 </main>
@@ -183,6 +191,7 @@ function showSection(id){
  document.querySelectorAll('main section').forEach(s=>{
   s.hidden=true;
  });
+
  document.getElementById(id).hidden=false;
  window.scrollTo(0,0);
 }
@@ -190,56 +199,15 @@ function showSection(id){
 
 <script>
 const SUPABASE_URL = "https://xeuhhmjkkgkfakiorrzd.supabase.co";
+
 const SUPABASE_KEY = "sb_publishable_Ia-GdcyqO0ojfCF_2a8ozA_cg-g0FVb";
 
 const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
+ SUPABASE_URL,
+ SUPABASE_KEY
 );
 </script>
-<script>
-document.getElementById("reportForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
 
-  const inputs = this.querySelectorAll("input");
-  const textareas = this.querySelectorAll("textarea");
-
-  const subject = Array.from(inputs).find(el =>
-    el.placeholder === "Subject of report"
-  );
-
-  const description = Array.from(textareas).find(el =>
-    el.placeholder === "Describe the incident"
-  );
-
-  const anonymous = this.querySelector('input[type="checkbox"]');
-  const contact = Array.from(inputs).find(el =>
-    el.type === "email" || el.type === "tel"
-  );
-
-  if (!subject || !description) {
-    alert("Please check the report form fields.");
-    return;
-  }
-
-  const { data, error } = await supabaseClient
-    .from("reports")
-    .insert([{
-      category: subject.value,
-      description: description.value,
-      is_anonymous: anonymous ? anonymous.checked : false,
-      contact: anonymous && anonymous.checked ? null : (contact ? contact.value : null),
-      status: "pending"
-    }]);
-
-  if (error) {
-    alert("Report submission failed: " + error.message);
-    return;
-  }
-
-  alert("Your report has been submitted successfully!");
-  this.reset();
-});
-                                                       </script>
 </body>
 </html>
+
